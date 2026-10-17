@@ -23,6 +23,28 @@ def test_rubric_evaluation_returns_score_feedback_and_point_breakdown():
     assert "part of it" in result["feedback"]
 
 
+def test_function_rubric_accepts_concise_correct_definition():
+    result = evaluate_answer(
+        "A function gives exactly one output for each input.",
+        ["each input has exactly one output"],
+    )
+
+    assert result["score"] == 1.0
+    assert result["matched_points"] == ["each input has exactly one output"]
+    assert result["missing_points"] == []
+
+
+def test_function_rubric_rejects_answer_that_allows_multiple_outputs():
+    result = evaluate_answer(
+        "A function can give many outputs for the same input.",
+        ["each input has exactly one output"],
+    )
+
+    assert result["score"] == 0.0
+    assert result["matched_points"] == []
+    assert result["missing_points"] == ["each input has exactly one output"]
+
+
 def test_empty_or_whitespace_rubric_does_not_divide_by_zero():
     result = evaluate_answer("some answer", ["", "  "])
 

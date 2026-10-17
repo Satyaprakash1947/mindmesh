@@ -16,9 +16,7 @@
       "diagnostic_question": "What does it mean for a rule to be a function, and can one input have two outputs?",
       "worked_example": "For f(x)=2x+1, input 3 maps to 7. Each input has one output, so this rule is a function.",
       "rubric": [
-        "each input has exactly one output",
-        "one input cannot map to two outputs",
-        "input output relationship"
+        "each input has exactly one output"
       ]
     },
     {
