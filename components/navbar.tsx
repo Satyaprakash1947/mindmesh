@@ -35,9 +35,16 @@ export default function Navbar() {
 
           <Link
             href="#get-started"
-            className="whitespace-nowrap rounded-xl border border-white/[0.12] bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-gray-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition duration-200 hover:border-white/25 hover:bg-white/10 hover:text-white sm:px-5"
+            className="whitespace-nowrap text-sm text-gray-300 transition-colors duration-200 hover:text-white"
           >
-            Get Started <span className="ml-1">↗</span>
+            Get Started 
+          </Link>
+
+          <Link
+            href="#get-started"
+            className="whitespace-nowrap text-sm text-gray-300 transition-colors duration-200 hover:text-white"
+          >
+            Get Started 
           </Link>
         </div>
 
