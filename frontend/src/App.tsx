@@ -139,7 +139,7 @@ export default function App() {
       <div className="sidebar-bottom"><div className="avatar">S</div><div><strong>Student workspace</strong><small>Learning profile · {studentId}</small></div><span className="online-dot" /></div>
     </aside>
     <main className="main-area">
-      <header className="topbar"><div><span>MindMesh</span><b>/</b><strong>{page}</strong></div><div className="topbar-right"><span className={`connection-dot ${usingMock ? "mock" : ""}`} />{usingMock ? "Mock data active" : "Learning engine ready"}<button className="target-chip" onClick={() => setPage("Graph")}>Goal · {concepts.find((item) => item.id === targetId)?.name || "Gradient Descent"} <span>⌄</span></button></div></header>
+      <header className="topbar"><div><span>MindMesh</span><b>/</b><strong>{page}</strong></div><div className="topbar-right"><span className={`connection-dot ${usingMock ? "mock" : ""}`} />{usingMock ? "Built-in tutor active" : "Learning engine ready"}<button className="target-chip" onClick={() => setPage("Graph")}>Goal · {concepts.find((item) => item.id === targetId)?.name || "Gradient Descent"} <span>⌄</span></button></div></header>
       {notice && <div className="notice" role="status"><span>{notice}</span><button onClick={() => setNotice("")} aria-label="Dismiss">×</button></div>}
       <div className="content-area">
         {page === "Workspace" && <WorkspacePage concepts={concepts} target={targetId} question={question} setQuestion={setQuestion} onStart={begin} busy={busy} onSelect={chooseTarget} />}

@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,10 +12,19 @@ from app.settings import Settings, get_settings
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     config = settings or get_settings()
+
+    @asynccontextmanager
+    async def lifespan(application: FastAPI):
+        try:
+            yield
+        finally:
+            application.state.runtime.close()
+
     application = FastAPI(
         title="MindMesh API",
         description="Adaptive learning with a prerequisite graph and mastery-aware next steps.",
         version="0.1.0",
+        lifespan=lifespan,
     )
     application.add_middleware(
         CORSMiddleware,
@@ -29,9 +40,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     application.include_router(router)
 
-    @application.on_event("shutdown")
-    def close_graph() -> None:
-        application.state.runtime.close()
+    @application.get("/", tags=["system"])
+    def root() -> dict[str, str]:
+        """Give browser visitors a useful landing response instead of a 404."""
+        return {
+            "name": "MindMesh API",
+            "status": "ready",
+            "docs": "/docs",
+            "health": "/api/health",
+        }
 
     return application
 

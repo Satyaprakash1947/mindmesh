@@ -52,6 +52,8 @@ docs/
 
 ## Run locally
 
+The quickest path uses the built-in concept graph and does not need any account, API key, or database. Start the backend and frontend in two terminals, then open `http://localhost:5173`.
+
 ### Backend
 
 ```bash
@@ -75,7 +77,17 @@ copy .env.example .env  # Windows PowerShell: Copy-Item .env.example .env
 npm run dev
 ```
 
-Open the Vite URL shown in the terminal. If the backend is unavailable, the frontend shows the seeded mock learning flow. Set `VITE_API_BASE_URL=http://localhost:8000` to use the API.
+Open `http://localhost:5173` (or the Vite URL shown in the terminal). If the backend is unavailable, the frontend shows the seeded mock learning flow. Set `VITE_API_BASE_URL=http://localhost:8000` to use the API. The API also allows the Vite `127.0.0.1` origin for setups that use that URL.
+
+### Run API and Neo4j with Docker Compose
+
+Docker Compose starts a local Neo4j database, waits for it to become healthy, seeds the concept graph, and then starts the API:
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:8000/docs` to explore the API. Start the frontend separately with the steps above. This Compose setup uses a development-only Neo4j password; do not reuse it outside your machine. The seed runs again safely whenever the seed container is recreated.
 
 ### Seed Neo4j Aura
 
@@ -121,6 +133,15 @@ See [the API contract](docs/api-contract.md). Main routes:
 ## Configuration and secrets
 
 Copy the relevant `.env.example` files to `.env` for local development. Never commit `.env` files or real Neo4j/LLM credentials. Configure those values in GitHub Actions and the hosting provider's secret/environment settings.
+
+| Goal | Required values or accounts |
+| --- | --- |
+| Run the frontend and API locally in built-in mode | None. Python and Node.js are installed locally; the API uses the bundled seed graph and in-memory attempts. |
+| Use generated tutor explanations | Optional OpenAI-compatible provider credentials: `LLM_API_BASE`, `LLM_API_KEY`, and `LLM_MODEL`. Without them, the authored tutor content is used. |
+| Persist graph and attempts in Neo4j | Optional Neo4j Aura instance (or local Docker Compose Neo4j) and `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`; `NEO4J_DATABASE` defaults to `neo4j`. Run the seed command once. |
+| Publish a hosted demo | GitHub repository access plus hosting accounts for the frontend (Vercel) and API (Render), and a Neo4j Aura instance for persistence. Set the frontend API URL and API CORS/Neo4j values in the hosting dashboards. |
+
+No GitHub token, LLM key, or Aura account is needed for local built-in mode. Do not paste secrets into GitHub issues, commits, or chat; add them only to local ignored `.env` files or the provider's secret settings. `CORS_ORIGINS` must contain the exact deployed frontend origin(s), comma-separated.
 
 ## Deploy
 

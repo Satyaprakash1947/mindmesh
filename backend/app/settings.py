@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     api_host: str = "0.0.0.0"
     api_port: int = 8000
-    cors_origins: str = "http://localhost:5173"
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     neo4j_uri: str = ""
     neo4j_username: str = ""
     neo4j_password: str = ""

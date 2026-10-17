@@ -1,7 +1,30 @@
+def test_root_explains_api_entry_points(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {
+        "name": "MindMesh API",
+        "status": "ready",
+        "docs": "/docs",
+        "health": "/api/health",
+    }
+
+
 def test_health_reports_memory_demo_mode(client):
     response = client.get("/api/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "graph_backend": "memory"}
+
+
+def test_vite_loopback_origin_is_allowed(client):
+    response = client.options(
+        "/api/health",
+        headers={
+            "Origin": "http://127.0.0.1:5173",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:5173"
 
 
 def test_graph_has_nodes_edges_and_target(client):
