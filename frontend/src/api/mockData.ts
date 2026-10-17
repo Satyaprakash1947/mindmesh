@@ -1,7 +1,7 @@
 import type { Concept, ConceptGraph, MasteryStatus } from "../types";
 
 export const concepts: Array<Concept & { order: number; keywords: string[]; diagnostic: string; example: string; rubric: string[] }> = [
-  { id: "functions", name: "Functions", order: 1, status: "unknown", explanation: "A function maps each allowed input to exactly one output.", keywords: ["function"], diagnostic: "What does it mean for a rule to be a function?", example: "For f(x)=2x+1, input 3 maps to 7.", rubric: ["input", "one output"] },
+  { id: "functions", name: "Functions", order: 1, status: "unknown", explanation: "A function maps each allowed input to exactly one output.", keywords: ["function"], diagnostic: "What does it mean for a rule to be a function?", example: "For f(x)=2x+1, input 3 maps to 7.", rubric: ["each input has exactly one output"] },
   { id: "linear_functions", name: "Linear Functions", order: 2, status: "unknown", explanation: "A linear function has a constant rate of change and graphs as a straight line.", keywords: ["linear", "line"], diagnostic: "What does the slope tell you in y=3x+2?", example: "Every increase of 1 in x changes y by 3.", rubric: ["constant rate", "slope"] },
   { id: "coordinate_change", name: "Coordinate Change", order: 3, status: "unknown", explanation: "A change is final value minus initial value: Δx=x₂−x₁.", keywords: ["coordinate", "delta"], diagnostic: "Between (2,4) and (5,10), what are Δx and Δy?", example: "Δx=3 and Δy=6.", rubric: ["delta x is 3", "delta y is 6"] },
   { id: "slope", name: "Slope", order: 4, status: "unknown", explanation: "Slope is change in output divided by change in input, or rise over run.", keywords: ["slope", "rate of change"], diagnostic: "Find the slope between (2,4) and (5,10).", example: "(10−4)/(5−2)=2.", rubric: ["change in y", "change in x", "slope is 2"] },
@@ -54,8 +54,50 @@ export function mockGraph(studentId: string, targetId: string): ConceptGraph {
   }
   const nodes = all.filter((concept) => required.has(concept.id));
   const target = nodes.find((concept) => concept.id === targetId);
-  const next = target?.status === "demonstrated" ? target : nodes.filter((concept) => concept.status !== "demonstrated").sort((a, b) => concepts.find((c) => c.id === a.id)!.order - concepts.find((c) => c.id === b.id)!.order)[0];
-  return { nodes: nodes.map(({ id, name, status }) => ({ id, name, status })), edges: prerequisiteEdges.filter((edge) => required.has(edge.source) && required.has(edge.target)), target: targetId, next_concept: next?.id || targetId };
+  const prerequisites = new Map<string, string[]>();
+  const children = new Map<string, string[]>();
+  for (const edge of prerequisiteEdges) {
+    prerequisites.set(edge.target, [...(prerequisites.get(edge.target) || []), edge.source]);
+    children.set(edge.source, [...(children.get(edge.source) || []), edge.target]);
+  }
+  const distance = new Map<string, number>([[targetId, 0]]);
+  const pending = [targetId];
+  while (pending.length) {
+    const current = pending.shift()!;
+    for (const prerequisite of prerequisites.get(current) || []) {
+      if (!distance.has(prerequisite)) {
+        distance.set(prerequisite, distance.get(current)! + 1);
+        pending.push(prerequisite);
+      }
+    }
+  }
+  const unlocked = [...distance.keys()]
+    .filter((id) => id !== targetId && nodes.find((node) => node.id === id)?.status !== "demonstrated")
+    .filter((id) => (prerequisites.get(id) || []).every((id) => nodes.find((node) => node.id === id)?.status === "demonstrated"))
+    .sort((a, b) => distance.get(a)! - distance.get(b)! || concepts.find((item) => item.id === a)!.order - concepts.find((item) => item.id === b)!.order);
+  const next = target?.status === "demonstrated" ? target.id : unlocked[0] || targetId;
+  const path = [next];
+  const pathPending: Array<[string, string[]]> = [[next, [next]]];
+  const visited = new Set([next]);
+  while (pathPending.length) {
+    const [current, currentPath] = pathPending.shift()!;
+    if (current === targetId) {
+      path.splice(0, path.length, ...currentPath);
+      break;
+    }
+    const orderedChildren = [...(children.get(current) || [])].sort((a, b) => concepts.find((item) => item.id === a)!.order - concepts.find((item) => item.id === b)!.order);
+    for (const child of orderedChildren) {
+      if (!visited.has(child)) {
+        visited.add(child);
+        pathPending.push([child, [...currentPath, child]]);
+      }
+    }
+  }
+  const pathNames = path.map((id) => concepts.find((concept) => concept.id === id)?.name || id);
+  const nextReason = next === targetId
+    ? (target?.status === "demonstrated" ? "The target concept is already demonstrated." : "All prerequisites are demonstrated; the target is ready.")
+    : `${pathNames[0]} is required for ` + pathNames.slice(1).join(", which is required for ") + ".";
+  return { nodes: nodes.map(({ id, name, status }) => ({ id, name, status })), edges: prerequisiteEdges.filter((edge) => required.has(edge.source) && required.has(edge.target)), target: targetId, next_concept: next, next_reason: nextReason };
 }
 
 export function getMockConcept(id: string) { return concepts.find((concept) => concept.id === id); }
@@ -63,8 +105,14 @@ export function getMockConcept(id: string) { return concepts.find((concept) => c
 export function gradeMockAnswer(answer: string, conceptId: string, studentId = "demo"): { score: number; feedback: string; status: MasteryStatus } {
   const concept = getMockConcept(conceptId);
   if (!concept) return { score: 0, feedback: "Choose a concept first.", status: "unknown" };
-  const text = answer.toLowerCase();
-  const hits = concept.rubric.filter((point) => point.toLowerCase().split(/\s+/).some((word) => word.length > 3 && text.includes(word))).length;
+  const answerWords = new Set(answer.toLowerCase().match(/[a-z0-9]+/g) || []);
+  const normalizedAnswer = [...answerWords].join(" ");
+  const hits = concept.rubric.filter((point) => {
+    const pointWords = point.toLowerCase().match(/[a-z0-9]+/g) || [];
+    const normalizedPoint = pointWords.join(" ");
+    const overlap = pointWords.filter((word) => answerWords.has(word)).length / pointWords.length;
+    return normalizedAnswer.includes(normalizedPoint) || overlap >= 0.6;
+  }).length;
   const score = Math.round((hits / concept.rubric.length) * 100) / 100;
   const status: MasteryStatus = score >= 0.7 ? "demonstrated" : "needs_review";
   setStatus(conceptId, status, studentId);
