@@ -69,5 +69,7 @@ def test_scored_answer_is_recorded(client):
     assert response.status_code == 200
     body = response.json()
     assert 0 <= body["score"] <= 1
+    assert body["matched_points"]
+    assert isinstance(body["missing_points"], list)
     assert body["status"] == "demonstrated"
     assert body["next_concept"] == "functions"
