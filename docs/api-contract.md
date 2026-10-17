@@ -45,7 +45,21 @@ Returns the diagnostic question, explanation, worked example, rubric, and mock/L
 
 Request: `{ "student_id":"s1", "concept_id":"derivatives", "answer":"..." }`.
 
-Returns `{ "score":0.3, "feedback":"...", "status":"needs_review", "next_concept":"derivatives", "next_reason":"..." }` and saves an attempt. Scores are between 0 and 1.
+Returns a structured rubric evaluation, saves the attempt, and recalculates the recommendation:
+
+```json
+{
+  "score": 0.67,
+  "feedback": "You have part of it. Revisit: one input cannot map to two outputs.",
+  "matched_points": ["each input has exactly one output", "input output relationship"],
+  "missing_points": ["one input cannot map to two outputs"],
+  "status": "needs_review",
+  "next_concept": "functions",
+  "next_reason": "Functions is required for Gradient Descent."
+}
+```
+
+Scores are between 0 and 1. `matched_points` and `missing_points` show which rubric criteria informed the score. Grading is deterministic and does not call the external tutor provider.
 
 ## `POST /learning/next`
 
