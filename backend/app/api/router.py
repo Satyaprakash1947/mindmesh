@@ -145,6 +145,7 @@ def answer(payload: AnswerRequest, request: Request) -> dict:
         "feedback": feedback,
         "status": runtime.graph.status_for(payload.student_id, payload.concept_id),
         "next_concept": graph_data["next_concept"] or target_id,
+        "next_reason": graph_data["next_reason"],
         "graph": graph_data,
     }
 
@@ -160,6 +161,7 @@ def learning_next(payload: LearningNextRequest, request: Request) -> dict:
         "target_concept_id": payload.target_concept_id,
         "next_concept": next_id,
         "status": runtime.graph.status_for(payload.student_id, next_id),
+        "next_reason": graph_data["next_reason"],
         "question": concept["diagnostic_question"],
         **runtime.tutor.teaching_material(concept),
         "graph": graph_data,
@@ -183,5 +185,6 @@ def mastery_update(payload: MasteryUpdateRequest, request: Request) -> dict:
     return {
         "status": runtime.graph.status_for(payload.student_id, payload.concept_id),
         "next_concept": graph_data["next_concept"] or target_id,
+        "next_reason": graph_data["next_reason"],
         "graph": graph_data,
     }

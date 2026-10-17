@@ -23,10 +23,11 @@ flowchart LR
 
 ```text
 backend/
+  data/concepts.json    Versioned concepts and prerequisite edges
   app/
     ai/                 Tutor provider and mock fallback
     api/                Graph and learning routes
-    graph/              Neo4j and in-memory graph repository
+    graph/              Database helper, parameterized queries, mastery, repository
     models/             Shared API schemas
     main.py             FastAPI application
   scripts/seed.py       Seed the Neo4j concept graph
@@ -95,7 +96,13 @@ The seed script is idempotent: it merges concept nodes and prerequisite edges by
 4. The learner's answer is graded against the concept rubric and saved as an attempt.
 5. The graph updates mastery and recommends the nearest unmet prerequisite; after a successful retest it can recommend the original target.
 
-Mastery states are `unknown`, `needs_review`, and `demonstrated`. The default mastery threshold is 0.7 and can be changed with `MASTERY_THRESHOLD`.
+Mastery states are `unknown`, `needs_review`, and `demonstrated`. No attempts means `unknown`; a latest score below 0.5 means `needs_review`; otherwise the mean of the latest two scores is compared with the default 0.7 threshold (`MASTERY_THRESHOLD`). The graph response explains why a prerequisite is next in `next_reason`.
+
+## Graph and seed data
+
+The source data in `backend/data/concepts.json` contains 15 concepts and 18 `REQUIRES` edges. An edge from A to B means A is a prerequisite for B. Each concept includes an original explanation, diagnostic question, worked example, and rubric. The Aura seed command creates uniqueness constraints and uses parameterized `MERGE` statements, so it is safe to run repeatedly. `docs/graph-schema.md` describes the node model, mastery rule, and recommendation behavior.
+
+`GET /api/graph/{concept_id}?student_id=...` returns `{nodes, edges, target, next_concept, next_reason}`. It picks the closest unmet prerequisite whose own prerequisites are demonstrated, and returns a readable reason that Person 3 can display in the graph UI.
 
 ## API
 

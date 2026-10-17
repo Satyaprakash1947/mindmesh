@@ -25,6 +25,7 @@ export interface ConceptGraph {
   edges: GraphEdge[];
   target: string;
   next_concept: string | null;
+  next_reason?: string | null;
 }
 
 export interface LearningStart {
@@ -41,11 +42,13 @@ export interface Evaluation {
   feedback: string;
   status: MasteryStatus;
   next_concept: string;
+  next_reason?: string;
   graph: ConceptGraph;
 }
 
 export interface TutorMaterial {
   next_concept: string;
+  next_reason?: string;
   status: MasteryStatus;
   question: string;
   explanation: string;

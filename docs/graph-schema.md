@@ -22,10 +22,14 @@ Properties: `id`, `student_id`, `concept_id`, `answer`, `score` (0–1), `feedba
 
 ## Mastery
 
-Mastery is the mean of the learner's latest five attempt scores for a concept. No attempts means `unknown`; a mean below `MASTERY_THRESHOLD` means `needs_review`; otherwise the concept is `demonstrated`. Recent attempts are ordered by `created_at` descending.
+Mastery considers the latest two attempt scores for a concept, ordered by `created_at` descending. No attempts means `unknown`. A latest score below `0.5` means `needs_review`. Otherwise, an average of the latest two scores at or above `MASTERY_THRESHOLD` means `demonstrated`; a lower average means `needs_review`. The default threshold is `0.7`.
 
 ## Query behavior
 
-The graph endpoint returns the target and its transitive prerequisite subgraph. Edges use `{source, target, type}`. Recommended next step is the earliest prerequisite on a shortest path that is not demonstrated; if all prerequisites are demonstrated, it is the target itself unless the target is also demonstrated.
+The graph endpoint returns the target and its transitive prerequisite subgraph. Edges use `{source, target, type}`. Recommended next step is the closest unmet prerequisite whose own prerequisites are all demonstrated. Ties use seed order and then concept ID. The graph payload includes `next_reason`, a readable prerequisite path. If all prerequisites are demonstrated, the target is ready; if the target is already demonstrated, the API reports that status in the reason.
 
-The in-memory implementation uses the same graph and mastery rules as the Neo4j adapter so the API stays usable without credentials.
+## Seed data and query safety
+
+`backend/data/concepts.json` is the source of truth for 15 concept records and 18 directed prerequisite edges. Each concept includes an original explanation, diagnostic question, worked example, and rubric. `backend/scripts/seed.py` creates unique ID constraints, then uses `MERGE` for concepts and edges so it can safely run more than once. All values are passed as Cypher parameters; query text is defined in `backend/app/graph/queries.py`.
+
+The in-memory implementation uses the same seed data, mastery function, and recommendation logic as the Neo4j adapter so the API stays usable without credentials.
