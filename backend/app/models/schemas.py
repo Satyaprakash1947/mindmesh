@@ -29,6 +29,7 @@ class GraphResponse(BaseModel):
     edges: list[GraphEdge]
     target: str
     next_concept: str | None = None
+    next_reason: str | None = None
 
 
 class LearningStartRequest(BaseModel):

@@ -1,0 +1,384 @@
+{
+  "concepts": [
+    {
+      "id": "functions",
+      "name": "Functions",
+      "order": 1,
+      "keywords": [
+        "function",
+        "input",
+        "output",
+        "mapping",
+        "domain",
+        "range"
+      ],
+      "explanation": "A function maps each allowed input to exactly one output. We write y = f(x) to show that y depends on x.",
+      "diagnostic_question": "What does it mean for a rule to be a function, and can one input have two outputs?",
+      "worked_example": "For f(x)=2x+1, input 3 maps to 7. Each input has one output, so this rule is a function.",
+      "rubric": [
+        "each input has exactly one output",
+        "one input cannot map to two outputs",
+        "input output relationship"
+      ]
+    },
+    {
+      "id": "linear_functions",
+      "name": "Linear Functions",
+      "order": 2,
+      "keywords": [
+        "linear",
+        "line",
+        "y=mx+b",
+        "intercept",
+        "slope"
+      ],
+      "explanation": "A linear function has a constant rate of change and graphs as a straight line, commonly written y=mx+b.",
+      "diagnostic_question": "In y=3x+2, what does the coefficient 3 tell you about the graph?",
+      "worked_example": "Increasing x by 1 changes y by 3, so the line has slope 3.",
+      "rubric": [
+        "constant rate of change",
+        "slope",
+        "y changes by 3 when x increases by 1"
+      ]
+    },
+    {
+      "id": "coordinate_change",
+      "name": "Coordinate Change",
+      "order": 3,
+      "keywords": [
+        "coordinate",
+        "change in x",
+        "change in y",
+        "delta",
+        "difference"
+      ],
+      "explanation": "A change is a final value minus an initial value. For two points, \u0394x=x\u2082\u2212x\u2081 and \u0394y=y\u2082\u2212y\u2081.",
+      "diagnostic_question": "Between (2, 4) and (5, 10), what are \u0394x and \u0394y?",
+      "worked_example": "\u0394x=5\u22122=3 and \u0394y=10\u22124=6.",
+      "rubric": [
+        "delta x is 3",
+        "delta y is 6",
+        "final value minus initial value"
+      ]
+    },
+    {
+      "id": "slope",
+      "name": "Slope",
+      "order": 4,
+      "keywords": [
+        "slope",
+        "rise over run",
+        "rate of change",
+        "secant",
+        "gradient"
+      ],
+      "explanation": "Slope measures average change in output per unit change in input: (y\u2082\u2212y\u2081)/(x\u2082\u2212x\u2081). It is the rise divided by the run.",
+      "diagnostic_question": "Find the slope between (2, 4) and (5, 10), and explain what the value means.",
+      "worked_example": "Slope=(10\u22124)/(5\u22122)=6/3=2. The output rises by 2 for each 1-unit increase in input.",
+      "rubric": [
+        "change in y divided by change in x",
+        "rise over run",
+        "slope is 2",
+        "output changes by 2 per input unit"
+      ]
+    },
+    {
+      "id": "limits",
+      "name": "Limits",
+      "order": 5,
+      "keywords": [
+        "limit",
+        "approach",
+        "tends",
+        "near",
+        "continuity"
+      ],
+      "explanation": "A limit describes the value a function approaches as its input gets close to a point, even if the function is not defined at that point.",
+      "diagnostic_question": "What does lim x\u21922 (x+3) equal, and what does a limit describe?",
+      "worked_example": "As x approaches 2, x+3 approaches 5, so the limit is 5.",
+      "rubric": [
+        "value approached",
+        "as the input gets close",
+        "limit is 5"
+      ]
+    },
+    {
+      "id": "secant_slope",
+      "name": "Secant Slope",
+      "order": 6,
+      "keywords": [
+        "secant",
+        "average slope",
+        "two points",
+        "interval"
+      ],
+      "explanation": "A secant line passes through two points on a curve. Its slope is the average rate of change over that interval.",
+      "diagnostic_question": "How is a secant-line slope different from the slope at a single point?",
+      "worked_example": "For f(x)=x\u00b2 from x=1 to x=3, the secant slope is (9\u22121)/(3\u22121)=4.",
+      "rubric": [
+        "uses two points",
+        "average rate of change",
+        "interval"
+      ]
+    },
+    {
+      "id": "derivatives",
+      "name": "Derivatives",
+      "order": 7,
+      "keywords": [
+        "derivative",
+        "instantaneous",
+        "tangent",
+        "differentiation",
+        "f prime"
+      ],
+      "explanation": "The derivative is the limit of secant slopes as the interval shrinks to zero. It gives instantaneous rate of change and the tangent-line slope.",
+      "diagnostic_question": "In your own words, what does f\u2032(a) tell you about f near x=a?",
+      "worked_example": "For f(x)=x\u00b2, f\u2032(x)=2x, so at x=3 the instantaneous slope is 6.",
+      "rubric": [
+        "instantaneous rate of change",
+        "slope of tangent line",
+        "limit of secant slopes",
+        "at x equals a"
+      ]
+    },
+    {
+      "id": "power_rule",
+      "name": "Power Rule",
+      "order": 8,
+      "keywords": [
+        "power rule",
+        "exponent",
+        "differentiate",
+        "polynomial derivative"
+      ],
+      "explanation": "For x\u207f, the power rule gives d(x\u207f)/dx = n\u00b7x\u207f\u207b\u00b9. Multiply by the exponent, then reduce the exponent by one.",
+      "diagnostic_question": "Differentiate f(x)=x\u00b3 using the power rule.",
+      "worked_example": "f\u2032(x)=3x\u00b2: bring the 3 down and subtract 1 from the exponent.",
+      "rubric": [
+        "multiply by exponent",
+        "reduce exponent by one",
+        "3x squared",
+        "3x^2"
+      ]
+    },
+    {
+      "id": "derivative_rules",
+      "name": "Derivative Rules",
+      "order": 9,
+      "keywords": [
+        "sum rule",
+        "constant multiple",
+        "product rule",
+        "chain rule",
+        "derivative rules"
+      ],
+      "explanation": "Linearity lets us differentiate sums term by term and pull constants outside. Product and chain rules handle products and compositions.",
+      "diagnostic_question": "How would you differentiate 4x\u00b2 + 3x term by term?",
+      "worked_example": "The derivative is 8x+3: apply the power rule to each term and keep the constant multiple.",
+      "rubric": [
+        "differentiate each term",
+        "constant multiple rule",
+        "8x plus 3",
+        "8x+3"
+      ]
+    },
+    {
+      "id": "partial_derivatives",
+      "name": "Partial Derivatives",
+      "order": 10,
+      "keywords": [
+        "partial derivative",
+        "multivariable",
+        "partial",
+        "hold constant"
+      ],
+      "explanation": "A partial derivative measures change with respect to one variable while the other variables are held constant.",
+      "diagnostic_question": "For f(x,y)=x\u00b2+3y, what is the partial derivative with respect to x?",
+      "worked_example": "Holding y constant, \u2202f/\u2202x=2x. The 3y term is constant with respect to x.",
+      "rubric": [
+        "hold y constant",
+        "2x",
+        "partial derivative with respect to x"
+      ]
+    },
+    {
+      "id": "gradient",
+      "name": "Gradient",
+      "order": 11,
+      "keywords": [
+        "gradient",
+        "vector",
+        "partial derivatives",
+        "direction",
+        "multivariable"
+      ],
+      "explanation": "The gradient collects a function's partial derivatives into a vector. It points in the direction of steepest increase.",
+      "diagnostic_question": "What information does the gradient vector contain, and which way does it point?",
+      "worked_example": "For f(x,y)=x\u00b2+y\u00b2, \u2207f=(2x,2y). At (1,2), the gradient is (2,4), the steepest-increase direction.",
+      "rubric": [
+        "vector of partial derivatives",
+        "steepest increase",
+        "direction of greatest increase"
+      ]
+    },
+    {
+      "id": "loss_functions",
+      "name": "Loss Functions",
+      "order": 12,
+      "keywords": [
+        "loss",
+        "objective",
+        "error",
+        "cost function",
+        "minimize"
+      ],
+      "explanation": "A loss function measures how poorly a model's predictions match the desired outcomes. Training seeks parameters that reduce the loss.",
+      "diagnostic_question": "What does a model's loss value represent during training?",
+      "worked_example": "If prediction error falls from 0.8 to 0.2 after an update, the model's loss has decreased.",
+      "rubric": [
+        "prediction error",
+        "how poorly predictions match targets",
+        "quantity to minimize"
+      ]
+    },
+    {
+      "id": "learning_rate",
+      "name": "Learning Rate",
+      "order": 13,
+      "keywords": [
+        "learning rate",
+        "step size",
+        "alpha",
+        "overshoot",
+        "convergence"
+      ],
+      "explanation": "The learning rate controls the size of each parameter update. Too large can overshoot; too small can make learning very slow.",
+      "diagnostic_question": "What can happen when the learning rate is much too large?",
+      "worked_example": "A learning rate of 0.01 makes a smaller update than 0.5 for the same gradient.",
+      "rubric": [
+        "step size",
+        "overshoot",
+        "oscillate",
+        "fail to converge"
+      ]
+    },
+    {
+      "id": "gradient_descent",
+      "name": "Gradient Descent",
+      "order": 14,
+      "keywords": [
+        "gradient descent",
+        "optimize",
+        "optimization",
+        "parameters",
+        "train model",
+        "minimize function"
+      ],
+      "explanation": "Gradient descent iteratively updates parameters opposite the gradient to reduce a loss: \u03b8 \u2190 \u03b8 \u2212 \u03b7\u2207L(\u03b8). The learning rate \u03b7 sets the step size.",
+      "diagnostic_question": "Why does gradient descent subtract the gradient when minimizing a loss?",
+      "worked_example": "If \u03b8=2, \u03b7=0.1, and dL/d\u03b8=4, then \u03b8 becomes 2\u22120.1\u00b74=1.6, moving downhill locally.",
+      "rubric": [
+        "gradient points uphill",
+        "negative gradient points downhill",
+        "subtract the gradient",
+        "reduce the loss",
+        "learning rate controls step size"
+      ]
+    },
+    {
+      "id": "stochastic_gradient_descent",
+      "name": "Stochastic Gradient Descent",
+      "order": 15,
+      "keywords": [
+        "stochastic gradient descent",
+        "sgd",
+        "mini batch",
+        "batch gradient",
+        "training data"
+      ],
+      "explanation": "Stochastic gradient descent estimates the gradient from one example or a small batch, trading noisier updates for cheaper, more frequent steps.",
+      "diagnostic_question": "How does SGD's gradient estimate differ from full-batch gradient descent?",
+      "worked_example": "A mini-batch of 32 examples gives a cheaper gradient estimate than processing all 10,000 examples for every update.",
+      "rubric": [
+        "one example or mini-batch",
+        "estimate rather than full dataset",
+        "noisier but cheaper updates"
+      ]
+    }
+  ],
+  "requires": [
+    [
+      "functions",
+      "linear_functions"
+    ],
+    [
+      "linear_functions",
+      "coordinate_change"
+    ],
+    [
+      "coordinate_change",
+      "slope"
+    ],
+    [
+      "slope",
+      "limits"
+    ],
+    [
+      "slope",
+      "secant_slope"
+    ],
+    [
+      "limits",
+      "derivatives"
+    ],
+    [
+      "secant_slope",
+      "derivatives"
+    ],
+    [
+      "derivatives",
+      "power_rule"
+    ],
+    [
+      "power_rule",
+      "derivative_rules"
+    ],
+    [
+      "derivatives",
+      "partial_derivatives"
+    ],
+    [
+      "partial_derivatives",
+      "gradient"
+    ],
+    [
+      "derivative_rules",
+      "gradient"
+    ],
+    [
+      "functions",
+      "loss_functions"
+    ],
+    [
+      "loss_functions",
+      "learning_rate"
+    ],
+    [
+      "gradient",
+      "gradient_descent"
+    ],
+    [
+      "learning_rate",
+      "gradient_descent"
+    ],
+    [
+      "loss_functions",
+      "gradient_descent"
+    ],
+    [
+      "gradient_descent",
+      "stochastic_gradient_descent"
+    ]
+  ]
+}
