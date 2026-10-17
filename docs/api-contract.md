@@ -16,10 +16,14 @@ Returns the prerequisite subgraph and recommendation:
 
 ```json
 {
-  "nodes": [{"id":"derivatives","name":"Derivatives","status":"needs_review"}],
-  "edges": [{"source":"slope","target":"derivatives","type":"REQUIRES"}],
+  "nodes": [
+    {"id":"gradient","name":"Gradient","status":"needs_review"},
+    {"id":"gradient_descent","name":"Gradient Descent","status":"unknown"}
+  ],
+  "edges": [{"source":"partial_derivatives","target":"gradient","type":"REQUIRES"}],
   "target":"gradient_descent",
-  "next_concept":"derivatives"
+  "next_concept":"gradient",
+  "next_reason":"Gradient is required for Gradient Descent."
 }
 ```
 
@@ -41,7 +45,7 @@ Returns the diagnostic question, explanation, worked example, rubric, and mock/L
 
 Request: `{ "student_id":"s1", "concept_id":"derivatives", "answer":"..." }`.
 
-Returns `{ "score":0.3, "feedback":"...", "status":"needs_review", "next_concept":"derivatives" }` and saves an attempt. Scores are between 0 and 1.
+Returns `{ "score":0.3, "feedback":"...", "status":"needs_review", "next_concept":"derivatives", "next_reason":"..." }` and saves an attempt. Scores are between 0 and 1.
 
 ## `POST /learning/next`
 

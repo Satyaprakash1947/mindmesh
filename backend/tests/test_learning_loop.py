@@ -15,7 +15,45 @@ def test_answer_updates_mastery_and_recommendation(client):
     )
     assert updated.status_code == 200
     assert updated.json()["status"] == "demonstrated"
-    assert updated.json()["next_concept"] == "linear_functions"
+    assert updated.json()["next_concept"] == "loss_functions"
+    assert updated.json()["next_reason"] == "Loss Functions is required for Gradient Descent."
+
+
+def test_wrong_answer_then_correct_retest_changes_mastery_and_recommendation(client):
+    target = "gradient_descent"
+    before = client.get(f"/api/graph/{target}?student_id=learner-retest").json()
+    assert before["next_concept"] == "functions"
+
+    wrong = client.post(
+        "/api/mastery/update",
+        json={
+            "student_id": "learner-retest",
+            "concept_id": "functions",
+            "answer": "An input can have two outputs.",
+            "score": 0.41,
+            "feedback": "Try again.",
+            "target_concept_id": target,
+        },
+    )
+    assert wrong.status_code == 200
+    assert wrong.json()["status"] == "needs_review"
+    assert wrong.json()["next_concept"] == "functions"
+
+    retest = client.post(
+        "/api/mastery/update",
+        json={
+            "student_id": "learner-retest",
+            "concept_id": "functions",
+            "answer": "Each input has exactly one output.",
+            "score": 0.99,
+            "feedback": "Correct.",
+            "target_concept_id": target,
+        },
+    )
+    assert retest.status_code == 200
+    assert retest.json()["status"] == "demonstrated"
+    assert retest.json()["next_concept"] == "loss_functions"
+    assert retest.json()["next_reason"] == "Loss Functions is required for Gradient Descent."
 
 
 def test_scored_answer_is_recorded(client):
