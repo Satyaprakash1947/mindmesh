@@ -4,7 +4,7 @@ import re
 
 from fastapi import APIRouter, HTTPException, Request
 
-from app.ai.service import grade_answer
+from app.ai.service import evaluate_answer
 from app.models.schemas import (
     AnswerRequest,
     DiagnoseRequest,
@@ -136,13 +136,18 @@ def answer(payload: AnswerRequest, request: Request) -> dict:
     concept = runtime.graph.get_concept(payload.concept_id)
     if concept is None:
         raise HTTPException(status_code=404, detail=f"Unknown concept: {payload.concept_id}")
-    score, feedback = grade_answer(payload.answer, concept["rubric"])
-    runtime.graph.record_attempt(payload.student_id, payload.concept_id, payload.answer, score, feedback)
+    evaluation = evaluate_answer(payload.answer, concept["rubric"])
+    runtime.graph.record_attempt(
+        payload.student_id,
+        payload.concept_id,
+        payload.answer,
+        evaluation["score"],
+        evaluation["feedback"],
+    )
     target_id = payload.target_concept_id or runtime.sessions.get(payload.student_id, payload.concept_id)
     graph_data = _graph_response(runtime, payload.student_id, target_id)
     return {
-        "score": score,
-        "feedback": feedback,
+        **evaluation,
         "status": runtime.graph.status_for(payload.student_id, payload.concept_id),
         "next_concept": graph_data["next_concept"] or target_id,
         "next_reason": graph_data["next_reason"],
