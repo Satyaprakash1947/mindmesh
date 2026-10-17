@@ -145,11 +145,11 @@ No GitHub token, LLM key, or Aura account is needed for local built-in mode. Do 
 
 ## Deploy
 
-- Frontend: import `frontend/` into Vercel; set `VITE_API_BASE_URL` to the deployed API URL.
-- Backend: deploy `backend/` using the included Dockerfile or `render.yaml`; set `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, and `CORS_ORIGINS` as environment values.
-- Provision Neo4j Aura separately and run the seed script once against the target database.
+- The public showcase frontend deploys to GitHub Pages from `main` through `.github/workflows/pages.yml`. It runs in built-in demo mode without API keys.
+- For a live API, deploy the included `render.yaml` Blueprint, then set the GitHub repository variable `VITE_API_BASE_URL` to the Render service URL. The Pages workflow will use it on its next run.
+- Neo4j Aura is optional. Without it, the API uses in-memory demo progress. To persist graph attempts, configure Aura credentials in Render and run the seed script once.
 
-The repo does not contain live deployment URLs yet. Add them here after the team deploys the app.
+See [the showcase deployment guide](docs/showcase-deployment.md) for setup, verification, and demo submission steps.
 
 ## Team workflow
 

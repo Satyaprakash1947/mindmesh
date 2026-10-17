@@ -1,9 +1,11 @@
 import { gradeMockAnswer, getMockConcept, mockConcepts, mockGraph } from "./mockData";
 import type { Concept, ConceptGraph, Evaluation, LearningStart, TutorMaterial } from "../types";
 
-const API = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+const configuredApi = import.meta.env.VITE_API_BASE_URL?.trim();
+const API = (configuredApi || (import.meta.env.DEV ? "http://localhost:8000" : "")).replace(/\/$/, "");
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  if (!API) throw new Error("API is not configured; using the built-in demo");
   const response = await fetch(`${API}/api${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
@@ -38,7 +40,7 @@ export async function startLearning(studentId: string, question: string, target?
 export async function submitAnswer(studentId: string, conceptId: string, target: string, answer: string): Promise<Evaluation> {
   try { return await request<Evaluation>("/answer", { method: "POST", body: JSON.stringify({ student_id: studentId, concept_id: conceptId, target_concept_id: target, answer }) }); }
   catch {
-    const evaluation = gradeMockAnswer(answer, conceptId);
+    const evaluation = gradeMockAnswer(answer, conceptId, studentId);
     const graph = mockGraph(studentId, target);
     return { ...evaluation, next_concept: graph.next_concept || target, graph };
   }
