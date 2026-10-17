@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Project roadmap
+    url: https://github.com/Satyaprakash1947/mindmesh/blob/main/ROADMAP.md
+    about: Review current scope and team ownership before opening an issue.
