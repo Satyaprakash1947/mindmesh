@@ -4,7 +4,7 @@ MindMesh is an adaptive learning tutor that maps a learner's question to a conce
 
 ## Project status
 
-This repository contains the initial runnable scaffold for the learning loop. The backend supports a seeded graph in memory and can connect to Neo4j Aura when configured. The frontend starts with local mock data and switches to the API when it is available. Hosting accounts and secrets are intentionally configured outside the repository.
+The repository includes the graph-driven learning loop, a deterministic rubric grader, an optional OpenAI-compatible tutor, and a React demo. The backend supports a seeded graph in memory and can connect to Neo4j Aura when configured. The frontend starts with local mock data and switches to the API when it is available. Hosting accounts and secrets are intentionally configured outside the repository.
 
 ## Architecture
 
@@ -94,7 +94,8 @@ The seed script is idempotent: it merges concept nodes and prerequisite edges by
 2. MindMesh maps the question to a concept. Low-confidence matches ask the learner to choose a topic.
 3. The API returns the prerequisite graph and a diagnostic question.
 4. The learner's answer is graded against the concept rubric and saved as an attempt.
-5. The graph updates mastery and recommends the nearest unmet prerequisite; after a successful retest it can recommend the original target.
+5. The response includes the score, feedback, matched rubric points, and missing rubric points. The graph updates mastery and recommends the nearest unmet prerequisite; after a successful retest it can recommend the original target.
+6. Teaching material comes from the configured tutor provider when it returns valid content; missing credentials, invalid responses, timeouts, and provider errors use the authored local explanation and worked example.
 
 Mastery states are `unknown`, `needs_review`, and `demonstrated`. No attempts means `unknown`; a latest score below 0.5 means `needs_review`; otherwise the mean of the latest two scores is compared with the default 0.7 threshold (`MASTERY_THRESHOLD`). The graph response explains why a prerequisite is next in `next_reason`.
 
