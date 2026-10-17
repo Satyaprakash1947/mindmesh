@@ -29,16 +29,16 @@ export const prerequisiteEdges = [
 
 const STORAGE_KEY = "mindmesh-status-v1";
 
-export function readStatuses(): Record<string, MasteryStatus> {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch { return {}; }
+export function readStatuses(studentId = "demo"): Record<string, MasteryStatus> {
+  try { return JSON.parse(localStorage.getItem(`${STORAGE_KEY}:${studentId}`) || "{}"); } catch { return {}; }
 }
 
-export function setStatus(conceptId: string, status: MasteryStatus): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...readStatuses(), [conceptId]: status }));
+export function setStatus(conceptId: string, status: MasteryStatus, studentId = "demo"): void {
+  localStorage.setItem(`${STORAGE_KEY}:${studentId}`, JSON.stringify({ ...readStatuses(studentId), [conceptId]: status }));
 }
 
 export function mockConcepts(studentId: string): Concept[] {
-  const statuses = studentId === "demo" ? readStatuses() : {};
+  const statuses = readStatuses(studentId);
   return concepts.map(({ id, name, explanation, diagnostic }) => ({ id, name, explanation, diagnostic_question: diagnostic, status: statuses[id] || "unknown" }));
 }
 
@@ -60,14 +60,14 @@ export function mockGraph(studentId: string, targetId: string): ConceptGraph {
 
 export function getMockConcept(id: string) { return concepts.find((concept) => concept.id === id); }
 
-export function gradeMockAnswer(answer: string, conceptId: string): { score: number; feedback: string; status: MasteryStatus } {
+export function gradeMockAnswer(answer: string, conceptId: string, studentId = "demo"): { score: number; feedback: string; status: MasteryStatus } {
   const concept = getMockConcept(conceptId);
   if (!concept) return { score: 0, feedback: "Choose a concept first.", status: "unknown" };
   const text = answer.toLowerCase();
   const hits = concept.rubric.filter((point) => point.toLowerCase().split(/\s+/).some((word) => word.length > 3 && text.includes(word))).length;
   const score = Math.round((hits / concept.rubric.length) * 100) / 100;
   const status: MasteryStatus = score >= 0.7 ? "demonstrated" : "needs_review";
-  setStatus(conceptId, status);
+  setStatus(conceptId, status, studentId);
   const feedback = status === "demonstrated" ? "Good work. You covered the key ideas." : `Review the idea, then try again. Key points: ${concept.rubric.join("; ")}.`;
   return { score, feedback, status };
 }

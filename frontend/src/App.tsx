@@ -9,10 +9,23 @@ import ProgressPage from "./pages/ProgressPage";
 
 type Page = "Workspace" | "Graph" | "Tutor" | "Quiz" | "Progress";
 const pages: Page[] = ["Workspace", "Graph", "Tutor", "Quiz", "Progress"];
+const STUDENT_ID_KEY = "mindmesh-student-id";
+
+function getStudentId(): string {
+  try {
+    const saved = window.localStorage.getItem(STUDENT_ID_KEY);
+    if (saved) return saved;
+    const generated = window.crypto.randomUUID();
+    window.localStorage.setItem(STUDENT_ID_KEY, generated);
+    return generated;
+  } catch {
+    return "demo";
+  }
+}
 
 export default function App() {
   const [page, setPage] = useState<Page>("Workspace");
-  const [studentId] = useState("demo");
+  const [studentId] = useState(getStudentId);
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [targetId, setTargetId] = useState("gradient_descent");
   const [currentId, setCurrentId] = useState("functions");
@@ -21,7 +34,7 @@ export default function App() {
   const [material, setMaterial] = useState<TutorMaterial | null>(null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
-  const [usingMock, setUsingMock] = useState(false);
+  const [usingMock, setUsingMock] = useState(!import.meta.env.VITE_API_BASE_URL && !import.meta.env.DEV);
 
   const refresh = useCallback(async (target = targetId) => {
     const [nextConcepts, nextGraph] = await Promise.all([loadConcepts(studentId), loadGraph(studentId, target)]);
