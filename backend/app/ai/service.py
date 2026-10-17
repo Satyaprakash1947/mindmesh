@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 
 import httpx
@@ -45,15 +46,13 @@ class TutorService:
             )
             response.raise_for_status()
             data = response.json()["choices"][0]["message"]["content"]
-            import json
-
             generated = json.loads(data)
             return {
                 "explanation": str(generated.get("explanation") or fallback["explanation"]),
                 "worked_example": str(generated.get("worked_example") or fallback["worked_example"]),
                 "provider": "llm",
             }
-        except Exception:
+        except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError):
             return fallback
 
 

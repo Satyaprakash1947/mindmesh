@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from neo4j import GraphDatabase
+from neo4j.exceptions import Neo4jError
 
 from app.graph.seed_data import CONCEPTS, REQUIRES
 from app.settings import Settings
@@ -28,7 +29,7 @@ class GraphRepository:
                 driver.verify_connectivity()
                 self.driver = driver
                 self.backend = "neo4j"
-            except Exception:
+            except (Neo4jError, ValueError):
                 if "driver" in locals():
                     driver.close()
 
